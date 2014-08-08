@@ -9,6 +9,8 @@ print 'Hi,%s, you have $%d.'%('Klein',100000000)
 print 'Hi,%s'%u'云燕'
 print 'growth rate:%d%%'%7
 print 'Number %x'%0xffe8
+print r'\\'
+print '\\'
 
 #list
 classmates = ['Michael','Bob','Tracy']
@@ -386,3 +388,13 @@ int2 = functools.partial(int,base=2)
 print int2('1000000')
 print int2('1010101')
 print int2('1010101',base=10)
+
+#module
+import sys
+print sys.path
+sys.path.append('D:\My_Projects\PYLearn')
+print sys.path
+
+#from __future__ import unicode_literals
+#from __future__ import division
+
