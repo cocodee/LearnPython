@@ -88,3 +88,16 @@ def bar(s):
 def main():
     bar('0')
 #main()
+
+import logging
+import pdb
+logging.basicConfig(level=logging.INFO)
+s = '0'
+n = int(s)
+#pdb.set_trace()
+logging.info('n=%d'%n)
+#print 10/n
+
+#python -m pdb exceptions.py 
+#l,n,p,q
+
