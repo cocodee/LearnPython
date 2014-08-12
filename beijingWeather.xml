@@ -1,0 +1,50 @@
+<rss xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" version="2.0">
+<channel>
+<title>Yahoo! Weather - Beijing, CN</title>
+<link>
+http://us.rd.yahoo.com/dailynews/rss/weather/Beijing__CN/*http://weather.yahoo.com/forecast/CHXX0008_c.html
+</link>
+<description>Yahoo! Weather for Beijing, CN</description>
+<language>en-us</language>
+<lastBuildDate>Tue, 12 Aug 2014 1:59 pm CST</lastBuildDate>
+<ttl>60</ttl>
+<yweather:location city="Beijing" region="" country="China"/>
+<yweather:units temperature="C" distance="km" pressure="mb" speed="km/h"/>
+<yweather:wind chill="32" direction="140" speed="6.44"/>
+<yweather:atmosphere humidity="30" visibility="15" pressure="1005" rising="0"/>
+<yweather:astronomy sunrise="5:21 am" sunset="7:15 pm"/>
+<image>
+<title>Yahoo! Weather</title>
+<width>142</width>
+<height>18</height>
+<link>http://weather.yahoo.com</link>
+<url>
+http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif
+</url>
+</image>
+<item>
+<title>Conditions for Beijing, CN at 1:59 pm CST</title>
+<geo:lat>39.91</geo:lat>
+<geo:long>116.39</geo:long>
+<link>
+http://us.rd.yahoo.com/dailynews/rss/weather/Beijing__CN/*http://weather.yahoo.com/forecast/CHXX0008_c.html
+</link>
+<pubDate>Tue, 12 Aug 2014 1:59 pm CST</pubDate>
+<yweather:condition text="Mostly Cloudy" code="28" temp="32" date="Tue, 12 Aug 2014 1:59 pm CST"/>
+<description>
+<![CDATA[
+<img src="http://l.yimg.com/a/i/us/we/52/28.gif"/><br /> <b>Current Conditions:</b><br /> Mostly Cloudy, 32 C<BR /> <BR /><b>Forecast:</b><BR /> Tue - Partly Cloudy. High: 32 Low: 19<br /> Wed - Thunderstorms. High: 25 Low: 18<br /> Thu - Partly Cloudy. High: 29 Low: 19<br /> Fri - PM Thunderstorms. High: 31 Low: 19<br /> Sat - Mostly Sunny. High: 32 Low: 20<br /> <br /> <a href="http://us.rd.yahoo.com/dailynews/rss/weather/Beijing__CN/*http://weather.yahoo.com/forecast/CHXX0008_c.html">Full Forecast at Yahoo! Weather</a><BR/><BR/> (provided by <a href="http://www.weather.com" >The Weather Channel</a>)<br/>
+]]>
+</description>
+<yweather:forecast day="Tue" date="12 Aug 2014" low="19" high="32" text="Partly Cloudy" code="30"/>
+<yweather:forecast day="Wed" date="13 Aug 2014" low="18" high="25" text="Thunderstorms" code="4"/>
+<yweather:forecast day="Thu" date="14 Aug 2014" low="19" high="29" text="Partly Cloudy" code="30"/>
+<yweather:forecast day="Fri" date="15 Aug 2014" low="19" high="31" text="PM Thunderstorms" code="38"/>
+<yweather:forecast day="Sat" date="16 Aug 2014" low="20" high="32" text="Mostly Sunny" code="34"/>
+<guid isPermaLink="false">CHXX0008_2014_08_16_7_00_CST</guid>
+</item>
+</channel>
+</rss>
+<!--
+ api1.weather.gq1.yahoo.com Tue Aug 12 00:32:08 PDT 2014 
+-->
