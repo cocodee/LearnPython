@@ -376,6 +376,259 @@ class Solution:
                 if node.right != None:
                     work.append([node.right,node.val+presum])
         return False
+    def pathSum(self, root, sum):
+        result = []
+        work = []
+        work.append([root,0,[]])
+        while len(work)>0:
+            a = work[0]
+            work.pop(0)
+            node = a[0]
+            presum = a[1]
+            if node ==None:
+                return result
+            elif node.left == None and node.right == None:
+                if presum + node.val ==sum:
+                    trace = list(a[2])
+                    trace.append(node.val)
+                    result.append(trace)
+            else:
+                if node.left != None:
+                    trace = list(a[2])
+                    trace.append(node.val)
+                    work.append([node.left,node.val+presum,trace])
+                if node.right != None:
+                    trace = list(a[2])
+                    trace.append(node.val)
+                    work.append([node.right,node.val+presum,trace])
+        return result        
+    def atoi(self, str):
+        if str == None:
+            return 0
+        phase = 0
+        sum = 0
+        sign = '+'
+        for chr in str:
+            if phase ==0:
+                if chr ==' ':
+                    continue
+                elif chr =='+':
+                    sign = '+'
+                    phase = 1
+                elif chr == '-':
+                    sign = '-'
+                    phase =1
+                elif chr >='0' and chr <='9':
+                    num = int(chr)
+                    sum = sum*10+num
+                    phase =1
+                else:
+                    return 0
+            elif phase ==1:
+                if chr >='0' and chr <='9': 
+                    if sum>2147483647//10 or ((sum ==(2147483647//10)) and int(chr)>7):
+                        if sign == '+':
+                            return 2147483647
+                        else:
+                            return -2147483648                    
+                    num = int(chr)
+                    sum = sum*10+num
+                else:
+                    phase = 2                 
+            else:
+                continue
+        if sign == '-':
+            sum=-sum
+        return sum
+
+    def maxPathSum(self, root):
+        if root == None:
+            return 0
+        maxSum = [root.val]
+        self.recNodes(root,maxSum)
+        return maxSum[0]
+    def recNodes(self,node,maxSum):
+        numl = 0
+        numr = 0
+        if node.left != None:
+            numl = self.recNodes(node.left,maxSum)
+        if node.right != None:
+            numr = self.recNodes(node.right,maxSum)
+        value = node.val
+        sumWhole  = self.checkMax(value,numl+numr,maxSum)
+        if numl>0:
+            sumLeft = self.checkMax(value,numl,maxSum)
+        else:
+            sumLeft = value
+        if numr>0:
+            sumRight = self.checkMax(value,numr,maxSum)
+        else:
+            sumRight = value
+        return max([sumLeft,sumRight])
+    def checkMax(self,value,sum,maxSum):
+        if sum>0:
+            sum =sum+value
+        else:
+            sum =value
+        if(sum>maxSum[0]):
+            maxSum[0]=sum
+        return sum
+    def preorderTraversal(self, root):
+        result = []
+        self.subPreorder(root,result)
+        return result
+    def subPreorder(self,node,result):
+        if node == None:
+            return
+        result.append(node.val)
+        self.subPreorder(node.left,result)
+        self.subPreorder(node.right,result)
+    def postorderTraversal(self, root):
+        result = []
+        self.subPostorder(root,result)
+        return result
+    def subPostorder(self,node,result):
+        if node == None:
+            return
+        self.subPostorder(node.left,result)
+        self.subPostorder(node.right,result) 
+        result.append(node.val)   
+    def buildTree1(self,str):
+        return self.subBuildTree(str,1)
+    def subBuildTree(self,str,start):
+        if start>len(str):
+            return None
+        else:
+            if str[start-1] == '#':
+                return None
+            else:
+                node = TreeNode(int(str[start-1]))
+                node.left = self.subBuildTree(str,start*2)
+                node.right = self.subBuildTree(str,start*2+1)
+                return node
+        return None
+    def buildTree(self, inorder, postorder):
+        return self.buildTreeSub(inorder,0,len(inorder)-1,postorder,0,len(postorder)-1)
+    def buildTreeSub(self, inorder, isi,ie,postorder,ps,pe):
+        if isi>ie or ps>pe:
+            return None
+        rootval = postorder[pe]
+        root = TreeNode(rootval)
+        mid = isi
+        for i in range(isi,ie+1):
+            if inorder[i] == rootval:
+                mid = i 
+        leftnum = mid -isi
+        root.left = self.buildTreeSub(inorder,isi,mid-1,postorder,ps,ps+leftnum-1)
+        root.right = self.buildTreeSub(inorder,mid+1,ie,postorder,ps+leftnum,pe-1)
+        return root
+    def buildTree2(self, preorder,inorder):
+        return self.buildTreeSub2(inorder,0,len(inorder)-1,preorder,0,len(preorder)-1)
+    def buildTreeSub2(self, inorder, isi,ie,preorder,ps,pe):
+        if isi>ie or ps>pe:
+            return None
+        rootval = preorder[ps]
+        root = TreeNode(rootval)
+        mid = isi
+        for i in range(isi,ie+1):
+            if inorder[i] == rootval:
+                mid = i 
+        leftnum = mid -isi
+        root.left = self.buildTreeSub2(inorder,isi,mid-1,preorder,ps+1,ps+leftnum)
+        root.right = self.buildTreeSub2(inorder,mid+1,ie,preorder,ps+leftnum+1,pe)
+        return root  
+    def threeSum(self,num):
+        result = []
+        num.sort()
+        length = len(num)
+        for i in range(0,length):
+            if i!= 0 and num[i]==num[i-1]:
+                continue
+            start = i+1
+            end = length -1
+            while start<end:
+                sum = num[i]+num[start]+num[end]
+                if sum>0:
+                    end=end-1
+                elif sum<0:
+                    start=start+1
+                elif start != i+1 and num[start]==num[start-1]:
+                    start=start+1
+                elif end !=length-1 and num[end]==num[end+1]:
+                    end = end -1
+                else:
+                    result.append([num[i],num[start],num[end]])
+                    start = start+1
+                    end = end-1
+        return result 
+    def threeSumClosest(self,num,target):
+        result = None
+        diff = None
+        value = None
+        num.sort()
+        length = len(num)
+        for i in range(0,length):
+            if i!= 0 and num[i]==num[i-1]:
+                continue
+            start = i+1
+            end = length -1
+            while start<end:
+                sum = num[i]+num[start]+num[end]
+                if sum>target:
+                    d = sum - target
+                    if diff == None or d<diff:
+                        value =sum
+                        diff = d
+                        result = [num[i],num[start],num[end]]
+                    end=end-1
+                elif sum<target:
+                    d = target-sum
+                    if diff == None or d<diff:
+                        value =sum
+                        diff = d
+                        result = [num[i],num[start],num[end]]                   
+                    start=start+1
+                elif start != i+1 and num[start]==num[start-1]:
+                    start=start+1
+                elif end !=length-1 and num[end]==num[end+1]:
+                    end = end -1
+                else:
+                    value =target
+                    diff = 0
+                    result = [num[i],num[start],num[end]]                    
+                    start = start+1
+                    end = end-1
+        return value         
+    def fourSum(self, num, target):
+        result = []
+        num.sort()
+        length = len(num)  
+        for i in range(0,length-3):
+            if i>0 and num[i]==num[i-1]:
+                continue
+            for j in range(i+1,length-2):
+                if j>i+1 and num[j]==num[j-1]:
+                    continue
+                target2 = target-num[i]-num[j]
+                start,end = j+1,length-1
+                while start<end:
+                    sum = num[start]+num[end]
+                    if sum>target2:
+                        end = end -1
+                    elif sum<target2:
+                        start=start+1
+                    else:
+                        result.append([num[i],num[j],num[start],num[end]])
+                        k = start+1
+                        while k<end and num[k]==num[start]:
+                            k=k+1
+                        start =k
+
+                        k = end-1
+                        while k> start and num[k]==num[end]:
+                            k=k-1     
+                        end =k 
+        return result
 class TreeNode(object):
     def __init__(self,x):
         self.val = x
@@ -411,5 +664,42 @@ r = TreeNode(-2)
 print r.val
 r.right = rc
 print s.hasPathSum(r,-2)
+print s.pathSum(r,-5)
+print s.pathSum(r,-2)
+print s.preorderTraversal(r)
+print s.postorderTraversal(r)
+rc = TreeNode(11)
+r = TreeNode(7)
+l = TreeNode(2)
+rc.left = l
+rc.right =r
+l = rc
+rc = TreeNode(4)
+rc.left = l
+l = rc
+rc = TreeNode(5)
+rc.left = l
+print s.pathSum(rc,22)
+print s.maxPathSum(rc)
+print s.preorderTraversal(rc)
+print s.postorderTraversal(rc)
 print None != None
 print None == None
+print s.atoi('-2157483646-ee56')
+print s.atoi('2147483648')
+print s.atoi('-1010023630o4')
+print s.atoi('1234567890123456789012345678901234567890')
+
+tree = s.buildTree1('1#3##5#')
+print s.preorderTraversal(tree)
+
+inorder = [4,2,5,1,3]
+postorder = [4,5,2,3,1]
+preorder = [1,2,4,5,3]
+root = s.buildTree(inorder,postorder)
+print s.preorderTraversal(root)
+root  = s.buildTree2(preorder,inorder)
+print s.preorderTraversal(root)
+print s.threeSum([-1,0,1,2,-1,-4])
+print s.fourSum([91277418,66271374,38763793,4092006,11415077,60468277,1122637,72398035,-62267800,22082642,60359529,-16540633,92671879,-64462734,-55855043,-40899846,88007957,-57387813,-49552230,-96789394,18318594,-3246760,-44346548,-21370279,42493875,25185969,83216261,-70078020,-53687927,-76072023,-65863359,-61708176,-29175835,85675811,-80575807,-92211746,44755622,-23368379,23619674,-749263,-40707953,-68966953,72694581,-52328726,-78618474,40958224,-2921736,-55902268,-74278762,63342010,29076029,58781716,56045007,-67966567,-79405127,-45778231,-47167435,1586413,-58822903,-51277270,87348634,-86955956,-47418266,74884315,-36952674,-29067969,-98812826,-44893101,-22516153,-34522513,34091871,-79583480,47562301,6154068,87601405,-48859327,-2183204,17736781,31189878,-23814871,-35880166,39204002,93248899,-42067196,-49473145,-75235452,-61923200,64824322,-88505198,20903451,-80926102,56089387,-58094433,37743524,-71480010,-14975982,19473982,47085913,-90793462,-33520678,70775566,-76347995,-16091435,94700640,17183454,85735982,90399615,-86251609,-68167910,-95327478,90586275,-99524469,16999817,27815883,-88279865,53092631,75125438,44270568,-23129316,-846252,-59608044,90938699,80923976,3534451,6218186,41256179,-9165388,-11897463,92423776,-38991231,-6082654,92275443,74040861,77457712,-80549965,-42515693,69918944,-95198414,15677446,-52451179,-50111167,-23732840,39520751,-90474508,-27860023,65164540,26582346,-20183515,99018741,-2826130,-28461563,-24759460,-83828963,-1739800,71207113,26434787,52931083,-33111208,38314304,-29429107,-5567826,-5149750,9582750,85289753,75490866,-93202942,-85974081,7365682,-42953023,21825824,68329208,-87994788,3460985,18744871,-49724457,-12982362,-47800372,39958829,-95981751,-71017359,-18397211,27941418,-34699076,74174334,96928957,44328607,49293516,-39034828,5945763,-47046163,10986423,63478877,30677010,-21202664,-86235407,3164123,8956697,-9003909,-18929014,-73824245], -236727523)
+print s.threeSumClosest([-1,2,1,-4],1)
