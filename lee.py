@@ -806,7 +806,56 @@ class Solution:
                 else:
                     ways[i] = ways[i-1]
         return ways[len(s)-1]            
-
+    def isMatch(self, s, p):
+        lens = len(s)
+        lenp = len(p)
+        i=0
+        cnt =0
+        while i<lenp and p[i]!='*':
+            cnt=cnt+1
+            i=i+1
+        if cnt>lens:
+            return False
+        dp = [[False for x in range(lenp+1)] for y in range(lens+1) ]
+        dp[0][0] = True
+        for i in range(1,lenp+1):
+            if dp[0][i-1] and p[i-1]=='*':
+                dp[0][i]=True
+            for j in range(1,lens+1):
+                if p[i-1]=='*':
+                    dp[j][i]=dp[j-1][i] or dp[j][i-1]
+                elif p[i-1]=='?' or p[i-1]==s[j-1]:
+                    dp[j][i]=dp[j-1][i-1]
+                else:
+                    dp[j][i]=False
+        return dp[lens][lenp]
+    def isMatch1(self, s, p):
+        lens = len(s)
+        lenp = len(p)
+        star = -1
+        match = 0
+        trs = 0
+        trp = 0
+        while trs<lens:
+            if trp<lenp and (s[trs]==p[trp] or p[trp]=='?'):
+                trs =trs+1
+                trp = trp+1
+            elif trp<lenp and p[trp]=='*':
+                match = trs
+                star =trp
+                trp =trp+1
+            elif star !=-1:
+                trp = star+1
+                match = match+1
+                trs = match
+            else:
+                return False
+        while trp<lenp and p[trp]=='*':
+            trp = trp+1
+        if trp == lenp:
+            return True
+        else:
+            return False
 class TreeNode(object):
     def __init__(self,x):
         self.val = x
@@ -897,3 +946,6 @@ print s.numDecodings('12')
 print s.numDecodings('126')
 print s.numDecodings('106')
 print s.numDecodings('1006')
+
+print s.isMatch('acbacba','ac*a')
+print s.isMatch1('acbacbac','ac*a')
