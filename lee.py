@@ -629,6 +629,184 @@ class Solution:
                             k=k-1     
                         end =k 
         return result
+    def findLadders(self, start, end, dict):
+        curQueue = []
+        nextQueue = []
+        levelMap ={}
+        curlevelMap={}
+        found = False
+        if start not in dict:
+            dict.append(start)
+        if end in dict:
+            dict.remove(end)
+        tmp = {}
+        for i in dict:
+            tmp[i]=None
+        dict = tmp
+        curQueue.append(end)
+        while len(curQueue)>0:
+            for item in curQueue:
+                for i in range(len(item)):
+                    originc = item[i]
+                    foundCurCycle = False
+                    for ci in range(ord('a'),ord('z')+1):
+                        c = chr(ci)
+                        if c!=originc:
+                            newStr = item[:i]+c+item[i+1:]
+                            if newStr in dict:
+                                if newStr in curlevelMap:
+                                    curlevelMap[newStr].append(item)
+                                elif (newStr not in levelMap) and (newStr not in curlevelMap):
+                                    curlevelMap[newStr] = []
+                                    curlevelMap[newStr].append(item) 
+                                    nextQueue.append(newStr)
+                                    if newStr == start:
+                                        found = True
+                                        foundCurCycle = True
+                                        break
+                    if foundCurCycle:
+                        break
+            levelMap.update(curlevelMap)
+            curlevelMap = {}     
+            curQueue=nextQueue
+            nextQueue=[]          
+            if found:
+                break
+        result = []
+        if found:
+            self.buildLadders(start,end,start,levelMap,[start],result)
+        return result
+    def buildLadders(self,start,end,current,levelMap,li,result):
+        if current == end:
+            result.append(list(li))
+        else:
+            parent = levelMap[current]
+            for item in parent:
+                li.append(item)
+                self.buildLadders(start,end,item,levelMap,li,result)
+                li.remove(item)
+    def ladderLength(self, start, end, dict):
+        curQueue = []
+        nextQueue = []
+        levelMap ={}
+        curlevelMap={}
+        found = False
+        if start not in dict:
+            dict.append(start)
+        if end in dict:
+            dict.remove(end)
+        tmp = {}
+        for i in dict:
+            tmp[i]=None
+        dict = tmp
+        level = 1
+        curQueue.append(end)
+        while len(curQueue)>0:
+            level = level+1
+            for item in curQueue:
+                for i in range(len(item)):
+                    originc = item[i]
+                    foundCurCycle = False
+                    for ci in range(ord('a'),ord('z')+1):
+                        c = chr(ci)
+                        if c!=originc:
+                            newStr = item[:i]+c+item[i+1:]
+                            if newStr in dict:
+                                if newStr in curlevelMap:
+                                    curlevelMap[newStr].append(item)
+                                elif (newStr not in levelMap) and (newStr not in curlevelMap):
+                                    curlevelMap[newStr] = []
+                                    curlevelMap[newStr].append(item) 
+                                    nextQueue.append(newStr)
+                                    if newStr == start:
+                                        found = True
+                                        foundCurCycle = True
+                                        break
+                    if foundCurCycle:
+                        break
+                if found:
+                    break
+            levelMap.update(curlevelMap)
+            curlevelMap = {}     
+            curQueue=nextQueue
+            nextQueue=[]          
+            if found:
+                break
+        if found:
+            return level
+        else:
+            return 0   
+    def nextPermutation(self, num):
+        found = False
+        for i in reversed(range(len(num)-1)):
+            j=i+1
+            while j<len(num) and num[i]<num[j]:
+                j=j+1
+            j = j-1
+            if num[i]<num[j]:
+                num[i],num[j]=num[j],num[i]
+                tmp = list(num[i+1:])
+                tmp.sort()
+                for k in range(i+1,len(num)):
+                    num[k]=tmp[k-i-1]
+                found = True
+                break;
+        if not found:
+            num.reverse()
+            return num
+        else: 
+            return num
+    def permute2(self, num):
+        result = []
+        self.subpermute2(num,0,result)
+        return result
+    def subpermute2(self,num,n,result):
+        if n == len(num) -1:
+            result.append(list(num))
+            return;
+        else:
+            hash = {num[n]:None}
+            self.subpermute2(num,n+1,result)
+            for i in range(n+1,len(num)):
+                if num[i] in hash:
+                    continue
+                hash[num[i]] = None
+                num[n],num[i] = num[i], num[n]
+                self.subpermute2(num,n+1,result)
+                num[n],num[i] = num[i], num[n]
+    def numDecodings(self, s):
+        if len(s)==0:
+            return 0
+        ways ={}
+        if s[0]!= '0':
+            ways[0] = 1
+        else:
+            return 0
+        if len(s) == 1:
+            return 1
+        if int(s[0:2])<=26 and s[0] !='0':
+            if s[1]=='0':
+                ways[1] = 1
+            else:
+                ways[1] = 2
+        else:
+            if s[1]=='0':
+                ways[1] = 0
+            else:
+                ways[1] = 1
+        for i in range(2,len(s)):
+            if int(s[i-1:i+1])<=26 and s[i-1] !='0':
+                if s[i]=='0':
+                    ways[i] = ways[i-2]
+                else:
+                    ways[i] = ways[i-1]+ways[i-2]
+            else:
+                if s[i]=='0':
+                    ways[i] = 0
+                else:
+                    ways[i] = ways[i-1]
+        return ways[len(s)-1]            
+
 class TreeNode(object):
     def __init__(self,x):
         self.val = x
@@ -703,3 +881,19 @@ print s.preorderTraversal(root)
 print s.threeSum([-1,0,1,2,-1,-4])
 print s.fourSum([91277418,66271374,38763793,4092006,11415077,60468277,1122637,72398035,-62267800,22082642,60359529,-16540633,92671879,-64462734,-55855043,-40899846,88007957,-57387813,-49552230,-96789394,18318594,-3246760,-44346548,-21370279,42493875,25185969,83216261,-70078020,-53687927,-76072023,-65863359,-61708176,-29175835,85675811,-80575807,-92211746,44755622,-23368379,23619674,-749263,-40707953,-68966953,72694581,-52328726,-78618474,40958224,-2921736,-55902268,-74278762,63342010,29076029,58781716,56045007,-67966567,-79405127,-45778231,-47167435,1586413,-58822903,-51277270,87348634,-86955956,-47418266,74884315,-36952674,-29067969,-98812826,-44893101,-22516153,-34522513,34091871,-79583480,47562301,6154068,87601405,-48859327,-2183204,17736781,31189878,-23814871,-35880166,39204002,93248899,-42067196,-49473145,-75235452,-61923200,64824322,-88505198,20903451,-80926102,56089387,-58094433,37743524,-71480010,-14975982,19473982,47085913,-90793462,-33520678,70775566,-76347995,-16091435,94700640,17183454,85735982,90399615,-86251609,-68167910,-95327478,90586275,-99524469,16999817,27815883,-88279865,53092631,75125438,44270568,-23129316,-846252,-59608044,90938699,80923976,3534451,6218186,41256179,-9165388,-11897463,92423776,-38991231,-6082654,92275443,74040861,77457712,-80549965,-42515693,69918944,-95198414,15677446,-52451179,-50111167,-23732840,39520751,-90474508,-27860023,65164540,26582346,-20183515,99018741,-2826130,-28461563,-24759460,-83828963,-1739800,71207113,26434787,52931083,-33111208,38314304,-29429107,-5567826,-5149750,9582750,85289753,75490866,-93202942,-85974081,7365682,-42953023,21825824,68329208,-87994788,3460985,18744871,-49724457,-12982362,-47800372,39958829,-95981751,-71017359,-18397211,27941418,-34699076,74174334,96928957,44328607,49293516,-39034828,5945763,-47046163,10986423,63478877,30677010,-21202664,-86235407,3164123,8956697,-9003909,-18929014,-73824245], -236727523)
 print s.threeSumClosest([-1,2,1,-4],1)
+print s.findLadders('hit','cog',['hot','dot','dog','lot','log'])
+print s.findLadders("nape", "mild", ["dose","ends","dine","jars","prow","soap","guns","hops","cray","hove","ella","hour","lens","jive","wiry","earl","mara","part","flue","putt","rory","bull","york","ruts","lily","vamp","bask","peer","boat","dens","lyre","jets","wide","rile","boos","down","path","onyx","mows","toke","soto","dork","nape","mans","loin","jots","male","sits","minn","sale","pets","hugo","woke","suds","rugs","vole","warp","mite","pews","lips","pals","nigh","sulk","vice","clod","iowa","gibe","shad","carl","huns","coot","sera","mils","rose","orly","ford","void","time","eloy","risk","veep","reps","dolt","hens","tray","melt","rung","rich","saga","lust","yews","rode","many","cods","rape","last","tile","nosy","take","nope","toni","bank","jock","jody","diss","nips","bake","lima","wore","kins","cult","hart","wuss","tale","sing","lake","bogy","wigs","kari","magi","bass","pent","tost","fops","bags","duns","will","tart","drug","gale","mold","disk","spay","hows","naps","puss","gina","kara","zorn","boll","cams","boas","rave","sets","lego","hays","judy","chap","live","bahs","ohio","nibs","cuts","pups","data","kate","rump","hews","mary","stow","fang","bolt","rues","mesh","mice","rise","rant","dune","jell","laws","jove","bode","sung","nils","vila","mode","hued","cell","fies","swat","wags","nate","wist","honk","goth","told","oise","wail","tels","sore","hunk","mate","luke","tore","bond","bast","vows","ripe","fond","benz","firs","zeds","wary","baas","wins","pair","tags","cost","woes","buns","lend","bops","code","eddy","siva","oops","toed","bale","hutu","jolt","rife","darn","tape","bold","cope","cake","wisp","vats","wave","hems","bill","cord","pert","type","kroc","ucla","albs","yoko","silt","pock","drub","puny","fads","mull","pray","mole","talc","east","slay","jamb","mill","dung","jack","lynx","nome","leos","lade","sana","tike","cali","toge","pled","mile","mass","leon","sloe","lube","kans","cory","burs","race","toss","mild","tops","maze","city","sadr","bays","poet","volt","laze","gold","zuni","shea","gags","fist","ping","pope","cora","yaks","cosy","foci","plan","colo","hume","yowl","craw","pied","toga","lobs","love","lode","duds","bled","juts","gabs","fink","rock","pant","wipe","pele","suez","nina","ring","okra","warm","lyle","gape","bead","lead","jane","oink","ware","zibo","inns","mope","hang","made","fobs","gamy","fort","peak","gill","dino","dina","tier"])
+print s.ladderLength('hit','cog',['hot','dot','dog','lot','log'])
+print s.ladderLength("nape", "mild", ["dose","ends","dine","jars","prow","soap","guns","hops","cray","hove","ella","hour","lens","jive","wiry","earl","mara","part","flue","putt","rory","bull","york","ruts","lily","vamp","bask","peer","boat","dens","lyre","jets","wide","rile","boos","down","path","onyx","mows","toke","soto","dork","nape","mans","loin","jots","male","sits","minn","sale","pets","hugo","woke","suds","rugs","vole","warp","mite","pews","lips","pals","nigh","sulk","vice","clod","iowa","gibe","shad","carl","huns","coot","sera","mils","rose","orly","ford","void","time","eloy","risk","veep","reps","dolt","hens","tray","melt","rung","rich","saga","lust","yews","rode","many","cods","rape","last","tile","nosy","take","nope","toni","bank","jock","jody","diss","nips","bake","lima","wore","kins","cult","hart","wuss","tale","sing","lake","bogy","wigs","kari","magi","bass","pent","tost","fops","bags","duns","will","tart","drug","gale","mold","disk","spay","hows","naps","puss","gina","kara","zorn","boll","cams","boas","rave","sets","lego","hays","judy","chap","live","bahs","ohio","nibs","cuts","pups","data","kate","rump","hews","mary","stow","fang","bolt","rues","mesh","mice","rise","rant","dune","jell","laws","jove","bode","sung","nils","vila","mode","hued","cell","fies","swat","wags","nate","wist","honk","goth","told","oise","wail","tels","sore","hunk","mate","luke","tore","bond","bast","vows","ripe","fond","benz","firs","zeds","wary","baas","wins","pair","tags","cost","woes","buns","lend","bops","code","eddy","siva","oops","toed","bale","hutu","jolt","rife","darn","tape","bold","cope","cake","wisp","vats","wave","hems","bill","cord","pert","type","kroc","ucla","albs","yoko","silt","pock","drub","puny","fads","mull","pray","mole","talc","east","slay","jamb","mill","dung","jack","lynx","nome","leos","lade","sana","tike","cali","toge","pled","mile","mass","leon","sloe","lube","kans","cory","burs","race","toss","mild","tops","maze","city","sadr","bays","poet","volt","laze","gold","zuni","shea","gags","fist","ping","pope","cora","yaks","cosy","foci","plan","colo","hume","yowl","craw","pied","toga","lobs","love","lode","duds","bled","juts","gabs","fink","rock","pant","wipe","pele","suez","nina","ring","okra","warm","lyle","gape","bead","lead","jane","oink","ware","zibo","inns","mope","hang","made","fobs","gamy","fort","peak","gill","dino","dina","tier"])
+print s.nextPermutation([1,2,3])
+print s.nextPermutation([3,2,1])
+print s.nextPermutation([1,1,5])
+print s.nextPermutation([1,3,2])
+print s.nextPermutation([1])
+
+print s.permute2([1,1,2])
+
+print s.numDecodings('12')
+print s.numDecodings('126')
+print s.numDecodings('106')
+print s.numDecodings('1006')
