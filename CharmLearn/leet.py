@@ -250,6 +250,51 @@ class Solution:
                     else:
                         return False
         return True
+    #Text Justification 
+    def fullJustify(self, words, L):
+        curLine=[]
+        nextLine=[]
+        curLength=0
+        nextLength=0
+        next = 0
+        lens = len(words)
+        result = []
+        while next<lens and curLength+len(words[next])<=L:
+            curLine.append(words[next])
+            curLength += len(words[next])+1
+            next+=1    
+        while curLength>0:
+            while next<lens and nextLength+len(words[next])<=L:
+                nextLine.append(words[next])
+                nextLength += len(words[next])+1
+                next+=1    
+
+            if nextLength>0:
+                textLength = curLength-len(curLine)
+                tmp = ''+curLine[0]
+                if len(curLine)>1:
+                    space1 = (L-textLength)/(len(curLine)-1)
+                    space2 = (L-textLength)%(len(curLine)-1)
+                    for i in range(1,len(curLine)):
+                        if space2>=1:
+                            tmp = tmp+' '*space1+' '+curLine[i]
+                            space2=space2-1
+                        else:
+                            tmp = tmp+' '*space1+curLine[i] 
+                else:
+                    tmp = tmp+(L-textLength)*' '
+                result.append(tmp)
+            else: 
+                tmp=''+curLine[0]
+                for i in range(1,len(curLine)):
+                    tmp = tmp+' '+curLine[i] 
+                tmp=tmp+(L-len(tmp))*' '
+                result.append(tmp)
+            curLine=nextLine
+            curLength=nextLength
+            nextLine=[]
+            nextLength=0
+        return result
 s=Solution()
 print s.isMatch('aa','a*')
 print s.allpalindrome('aaba')
@@ -271,7 +316,9 @@ board=["53..7....","6..195...",".98....6.","8...6...3","4..8.3..1","7...2...6","
 "....8..79"]
 print s.solveSudoku(board)
 print s.isValidSudoku(board)
-
+print s.fullJustify(["This", "is", "an", "example", "of", "text", "justification."],16)
+print s.fullJustify(["This", "is", "an", "good a exampl e", "of", "text", "justification."],16)
+print s.fullJustify([""],2)
 
 if __name__=='__main__':
     from timeit import Timer
