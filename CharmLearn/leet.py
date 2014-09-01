@@ -135,6 +135,7 @@ class Solution:
                         d[i]=d[i]+d[j+1]
             maxlen = max([maxlen,d[i]])
         return maxlen
+    #N Queens
     def totalNQueens(self, n):
         def check(k,j):
             for i in range(k):
@@ -203,6 +204,38 @@ class Solution:
                 board[row]=-1
                 out[row]=buildRow(n,-1)
         return result
+    #Sudoku
+    def modifyMask(self,rmask,cmask,bmask,i,j,b,change):
+        rmask[i]^=change
+        cmask[j]^=change
+        bmask[b]^=change
+    def dfsSudoku(self,board,k,rmask,cmask,bmask):
+        if k == 81:
+            return True
+        i,j = k/9,k%9
+        b=i/3*3+j/3
+        if board[i][j]!='.':
+            return self.dfsSudoku(board,k+1,rmask,cmask,bmask)
+        for digit in range(9):
+            change = 1<<digit
+            if rmask[i]&change==0 and cmask[j]&change==0 and bmask[b]&change==0:
+                self.modifyMask(rmask,cmask,bmask,i,j,b,change)
+                board[i][j]=str(digit+1)
+                if self.dfsSudoku(board,k+1,rmask,cmask,bmask):
+                    return True
+                board[i][j]='.'
+                self.modifyMask(rmask,cmask,bmask,i,j,b,change)
+        return False  
+    def solveSudoku(self, board):
+        board = [[x for x in y] for y in board]
+        rmask,cmask,bmask = [0]*9,[0]*9,[0]*9
+        for i in range(9):
+            for j in range(9):
+                b = i/3*3+j/3
+                if board[i][j]!='.':
+                    change = 1<<(int(board[i][j])-1)
+                    self.modifyMask(rmask,cmask,bmask,i,j,b,change)
+        return self.dfsSudoku(board,0,rmask,cmask,bmask)
 s=Solution()
 print s.isMatch('aa','a*')
 print s.allpalindrome('aaba')
@@ -220,7 +253,9 @@ print s.isPalindrome('race a car')
 print s.isPalindrome('1a2')
 print s.isPalindromeN(1231)
 print s.solveNQueens(4)
-
+board=["53..7....","6..195...",".98....6.","8...6...3","4..8.3..1","7...2...6",".6....28.","...419..5",\
+"....8..79"]
+print s.solveSudoku(board)
 
 
 if __name__=='__main__':
@@ -239,3 +274,4 @@ if __name__=='__main__':
     t2= Timer('test2()',"from __main__ import test2")
     print t1.timeit(10)    
     print t2.timeit(10)
+
