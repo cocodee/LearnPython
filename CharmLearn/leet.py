@@ -236,6 +236,20 @@ class Solution:
                     change = 1<<(int(board[i][j])-1)
                     self.modifyMask(rmask,cmask,bmask,i,j,b,change)
         return self.dfsSudoku(board,0,rmask,cmask,bmask)
+    #Valid Sudoku
+    def isValidSudoku(self, board): 
+        board = [[x for x in y] for y in board]
+        rmask,cmask,bmask = [0]*9,[0]*9,[0]*9
+        for i in range(9):
+            for j in range(9):
+                b = i/3*3+j/3
+                if board[i][j]!='.':
+                    change = 1<<(int(board[i][j])-1)
+                    if rmask[i]&change==0 and cmask[j]&change==0 and bmask[b]&change==0:
+                        self.modifyMask(rmask,cmask,bmask,i,j,b,change)
+                    else:
+                        return False
+        return True
 s=Solution()
 print s.isMatch('aa','a*')
 print s.allpalindrome('aaba')
@@ -256,6 +270,7 @@ print s.solveNQueens(4)
 board=["53..7....","6..195...",".98....6.","8...6...3","4..8.3..1","7...2...6",".6....28.","...419..5",\
 "....8..79"]
 print s.solveSudoku(board)
+print s.isValidSudoku(board)
 
 
 if __name__=='__main__':
