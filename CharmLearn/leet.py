@@ -295,6 +295,139 @@ class Solution:
             nextLine=[]
             nextLength=0
         return result
+    def solve(self, board):
+        if len(board)==0:
+            return
+        origin = board
+        board = [[x for x in y] for y in board]    
+        lenr = len(board)
+        lenc = len(board[0])
+        workq =[]
+        remq =[]
+        workb = [['O' for y in range(lenc)] for x in range(lenr)]
+        for i in range(lenr):
+            for j in range(lenc):
+                if board[i][j] == 'O' and workb[i][j]=='O':
+                    workq =[]
+                    remq =[]
+                    workq.append([i,j])
+                    surrounded = True
+                    while len(workq)>0:
+                        print workq
+                        item = workq.pop(0)
+                        if board[item[0]][item[1]]!='O' or workb[item[0]][item[1]]!='O':
+                            continue
+                        remq.append([item[0],item[1]])
+                        workb[item[0]][item[1]]= 'X'   
+                        if item[0]==0:
+                            surrounded = False
+                        elif board[item[0]-1][item[1]]=='O' and workb[item[0]-1][item[1]]=='O':
+                            workq.append([item[0]-1,item[1]])
+                        if item[0]==lenr-1:
+                            surrounded = False
+                        elif board[item[0]+1][item[1]]=='O' and workb[item[0]+1][item[1]]=='O':
+                            workq.append([item[0]+1,item[1]])
+                        if item[1]==0:
+                            surrounded=False
+                        elif board[item[0]][item[1]-1]=='O' and workb[item[0]][item[1]-1]=='O':
+                            workq.append([item[0],item[1]-1])
+                        if item[1]==lenc-1:
+                            surrounded=False
+                        elif board[item[0]][item[1]+1]=='O' and workb[item[0]][item[1]+1]=='O':
+                            workq.append([item[0],item[1]+1])
+                    print surrounded
+                    if surrounded:
+                        for k in range(len(remq)):
+                            item = remq[k]
+                            board[item[0]][item[1]]='X'
+        for i in range(lenr):
+            row = ''.join(board[i])
+            origin[i]=row
+    def divide(self, dividend, divisor):
+        if divisor == 0:
+            return 2147483647
+        result=0
+        isNeg = False
+        if (dividend>0 and divisor<0) or (dividend<0 and divisor>0):
+            isNeg = True 
+        dividend = abs(dividend)
+        divisor = abs(divisor)
+
+        digit=0
+        while(divisor<=(dividend>>1)):
+            divisor=divisor<<1
+            digit+=1
+        while digit>=0:
+            if dividend>=divisor:
+                dividend-=divisor
+                result+=1<<digit
+            divisor=divisor>>1
+            digit-=1
+        if isNeg:
+            result=-result
+        return result
+    #Median of Two Sorted Arrays
+    def findKth(self,A,astart,m,B,bstart,n,k):
+        if m>n:
+            return self.findKth(B,bstart,n,A,astart,m,k)
+        if m==0:
+            return B[bstart+k-1]
+        if k==1:
+            return min(A[astart],B[bstart])
+        pa = min(k//2,m)
+        pb = k-pa
+        if A[astart+pa-1]<B[bstart+pb-1]:
+            return self.findKth(A,astart+pa,m-pa,B,bstart,pb,k-pa)
+        elif A[astart+pa-1]>B[bstart+pb-1]:
+            return self.findKth(A,astart,pa,B,bstart+pb,n-pb,k-pb)
+        else:
+            return A[astart+pa-1]
+    def findMedianSortedArrays(self, A, B):
+        m = len(A)
+        n = len(B)
+        total = m+n
+        if total%2==0:
+            return (self.findKth(A,0,m,B,0,n,total//2)+self.findKth(A,0,m,B,0,n,total//2+1))/2.0
+        else:
+            return self.findKth(A,0,m,B,0,n,total//2+1)
+    # Minimum Window Substring
+    def minWindow(self, S, T):
+        windowRecord = [0]*256
+        targetRecord = [0]*256
+        lens = len(S)
+        lent = len(T)
+        for i in range(lent):
+            targetRecord[ord(T[i])]+=1
+        minLength=lens+1
+        begin = -1
+        end = lens
+        start=0
+        found = 0
+        for i in range(lens):
+            if targetRecord[ord(S[i])]!=0:
+                windowRecord[ord(S[i])]+=1
+                if windowRecord[ord(S[i])]<=targetRecord[ord(S[i])]:
+                    found+=1
+                if found == lent:
+                    while start<i:
+                        if targetRecord[ord(S[start])]==0:
+                            start+=1
+                        else: 
+                            windowRecord[ord(S[start])]-=1
+                            if windowRecord[ord(S[start])]>=targetRecord[ord(S[start])]:
+                                start+=1
+                            else:
+                               break
+                    if i-start+1<minLength:
+                        minLength = i-start+1
+                        begin =start
+                        end =i
+                    found-=1
+                    start+=1
+        if begin ==-1:
+            return ''
+        else:
+            return S[begin:end+1]
 s=Solution()
 print s.isMatch('aa','a*')
 print s.allpalindrome('aaba')
@@ -319,7 +452,18 @@ print s.isValidSudoku(board)
 print s.fullJustify(["This", "is", "an", "example", "of", "text", "justification."],16)
 print s.fullJustify(["This", "is", "an", "good a exampl e", "of", "text", "justification."],16)
 print s.fullJustify([""],2)
-
+board = [['X','X','X','X'],['X','O','O','X'],['X','X','O','X'],['X','O','X','X']]
+print s.solve(board)
+board = ["XOOOOOOOOOOOOOOOOOOO","OXOOOOXOOOOOOOOOOOXX","OOOOOOOOXOOOOOOOOOOX","OOXOOOOOOOOOOOOOOOXO","OOOOOXOOOOXOOOOOXOOX","XOOOXOOOOOXOXOXOXOXO","OOOOXOOXOOOOOXOOXOOO","XOOOXXXOXOOOOXXOXOOO","OOOOOXXXXOOOOXOOXOOO","XOOOOXOOOOOOXXOOXOOX","OOOOOOOOOOXOOXOOOXOX","OOOOXOXOOXXOOOOOXOOO","XXOOOOOXOOOOOOOOOOOO","OXOXOOOXOXOOOXOXOXOO","OOXOOOOOOOXOOOOOXOXO","XXOOOOOOOOXOXXOOOXOO","OOXOOOOOOOXOOXOXOXOO","OOOXOOOOOXXXOOXOOOXO","OOOOOOOOOOOOOOOOOOOO","XOOOOXOOOXXOOXOXOXOO"]
+board = ["XXX","XOX","XXX"]
+print s.solve(board)
+print board
+print s.divide(100,3)
+print s.divide(1,0)
+print s.divide(-2147483648,2)
+print s.findMedianSortedArrays([1,2,5,7,8],[3,4,7,8])
+print s.findMedianSortedArrays([],[2,3])
+print s.minWindow("ADOBECODEBANC","ABC")
 if __name__=='__main__':
     from timeit import Timer
     def test1():
